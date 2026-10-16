@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>RAG Document Assistant</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 900px; margin: 2rem auto; padding: 0 1rem;
+            background: #f5f7fa; color: #1a202c;
+        }
+        h1 { margin-bottom: 0.25rem; }
+        .subtitle { color: #718096; margin-bottom: 1.5rem; }
+        .card {
+            background: white; padding: 1.5rem; margin-bottom: 1rem;
+            border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        textarea {
+            width: 100%; height: 80px; padding: 0.75rem;
+            border: 1px solid #cbd5e0; border-radius: 6px;
+            font-family: inherit; font-size: 1rem; resize: vertical;
+        }
+        button {
+            background: #4299e1; color: white; border: none;
+            padding: 0.75rem 2rem; border-radius: 6px;
+            font-size: 1rem; cursor: pointer; margin-top: 0.75rem;
+            transition: 0.2s;
+        }
+        button:hover:not(:disabled) { background: #3182ce; }
+        button:disabled { background: #cbd5e0; cursor: not-allowed; }
+        .stats {
+            background: #edf2f7; padding: 0.75rem 1rem;
+            border-radius: 6px; font-size: 0.9rem; color: #4a5568;
+            margin-bottom: 1rem;
+        }
+        .answer {
+            white-space: pre-wrap; line-height: 1.6;
+            padding: 1rem; background: #f0fff4;
+            border-left: 4px solid #48bb78; border-radius: 4px;
+        }
+        .sources { margin-top: 1rem; }
+        .source-item {
+            padding: 0.75rem; margin: 0.5rem 0;
+            background: #edf2f7; border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .source-item .score {
+            display: inline-block;
+            background: #4299e1; color: white;
+            padding: 0.15rem 0.5rem; border-radius: 4px;
+            font-size: 0.8rem; margin-right: 0.5rem;
+        }
+        .source-item .file { font-weight: 600; color: #2d3748; }
+        .source-item .preview { color: #718096; margin-top: 0.35rem; font-size: 0.85rem; }
+        .hidden { display: none; }
+        .spinner { display: inline-block; margin-left: 1rem; color: #718096; }
+    </style>
+</head>
+<body>
+    <h1>📚 RAG Document Assistant</h1>
+    <p class="subtitle">Задайте вопрос — система найдёт ответ в базе знаний (1292 чанка из 19 документов)</p>
+
+    <div class="stats" id="stats">Загрузка информации о базе...</div>
+
+    <div class="card">
+        <textarea id="query" placeholder="Например: Что такое нейронная сеть?"></textarea>
+        <button id="btn">Спросить</button>
+        <span class="spinner hidden" id="spinner">⏳ Ищу и генерирую ответ (10-20 сек)...</span>
+    </div>
+
+    <div id="result" class="hidden">
+        <div class="card">
+            <h3 style="margin-top:0">🤖 Ответ</h3>
+            <div class="answer" id="answer"></div>
+        </div>
+        <div class="card">
+            <h3 style="margin-top:0">📚 Источники</h3>
+            <div class="sources" id="sources"></div>
+        </div>
+    </div>
+
+    <script>
+        const queryInput = document.getElementById('query');
+        const btn = document.getElementById('btn');
+        const spinner = document.getElementById('spinner');
+        const result = document.getElementById('result');
+        const answerDiv = document.getElementById('answer');
+        const sourcesDiv = document.getElementById('sources');
+
+        // Загружаем статистику при открытии страницы
+        fetch('/api/stats')
+            .then(r => r.json())
+            .then(data => {
+                const stats = document.getElementById('stats');
+                if (data.loaded) {
+                    stats.textContent = `✓ База знаний: ${data.chunks} чанков из ${data.files} файлов`;
+                } else {
+                    stats.textContent = '⏳ Индекс загружается...';
+                }
+            })
+            .catch(() => {});
+
+        btn.addEventListener('click', async () => {
+            const query = queryInput.value.trim();
+            if (!query) { alert('Введите вопрос'); return; }
+
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            result.classList.add('hidden');
+
+            try {
+                const r = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query }),
+                });
+                const data = await r.json();
+                if (!r.ok) throw new Error(data.detail || 'Ошибка');
+
+                answerDiv.textContent = data.answer;
+
+                sourcesDiv.innerHTML = '';
+                data.sources.forEach(s => {
+                    const div = document.createElement('div');
+                    div.className = 'source-item';
+
+                    const scoreSpan = document.createElement('span');
+                    scoreSpan.className = 'score';
+                    scoreSpan.textContent = s.score;
+
+                    const fileSpan = document.createElement('span');
+                    fileSpan.className = 'file';
+                    fileSpan.textContent = s.file;
+
+                    const preview = document.createElement('div');
+                    preview.className = 'preview';
+                    preview.textContent = s.preview;
+
+                    div.appendChild(scoreSpan);
+                    div.appendChild(fileSpan);
+                    div.appendChild(preview);
+                    sourcesDiv.appendChild(div);
+                });
+
+                result.classList.remove('hidden');
+            } catch (e) {
+                alert(`Ошибка: ${e.message}`);
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+            }
+        });
+
+        // Enter для отправки (без Shift)
+        queryInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                btn.click();
+            }
+        });
+    </script>
+</body>
+</html>

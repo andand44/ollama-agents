@@ -26,6 +26,7 @@
 | 03 | [Calculator Agent](./03_calculator_agent/) | **Agentic loop**: многошаговые задачи, память переменных |
 | 04 | [Research Agent](./04_research_agent/) | **Внешние API**, работа с ошибками, **верификация фактов** |
 | 05 | [Multi-Agent Editor](./05_fastapi_research_agent/) | **Sub-agents**, diff-подход, FastAPI + Frontend |
+| 06 | [RAG Document Assistant](./06_rag_assistant/) | **RAG**, эмбеддинги, семантический поиск, FastAPI |
 
 **Research Agent в действии** — поиск в интернете и проверка фактов:
 
@@ -43,8 +44,4 @@ ollama pull qwen2.5:3b
 
 ## 📄 Лицензия
 
-<<<<<<< HEAD
 MIT — используй как хочешь.
-=======
-MIT — используй как хочешь.
->>>>>>> c6b56b36a71332456fe47cce82ba2bc03e01a286
