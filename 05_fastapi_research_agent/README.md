@@ -3,7 +3,7 @@
 Мультиагентная система редактирования текстов на локальной LLM. 
 **4 AI-агента** работают последовательно: Критик → Редактор → Факт-чекер → Судья.
 
-![Multi-Agent Editor demo](../assets/05_multiagent_demo.gif)
+![Multi-Agent Editor demo](../assets/05_fastapi_research_agent.gif)
 
 ## 🎯 Что делает
 
