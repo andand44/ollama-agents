@@ -1,5 +1,7 @@
 # 01 · Weather Agent
 
+![Weather Agent demo](../assets/01_weather_demo.gif)
+
 Первый агент в серии. Демонстрирует базовый **tool calling**.
 
 ## Что умеет

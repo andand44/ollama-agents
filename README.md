@@ -26,6 +26,10 @@
 | 03 | [Calculator Agent](./03_calculator_agent/) | **Agentic loop**: многошаговые задачи, память переменных |
 | 04 | [Research Agent](./04_research_agent/) | **Внешние API**, работа с ошибками, **верификация фактов** |
 
+**Research Agent в действии** — поиск в интернете и проверка фактов:
+
+![Research Agent demo](./assets/04_research_demo.gif)
+
 ## 🚀 Как запустить
 
 ### 1. Установи Ollama

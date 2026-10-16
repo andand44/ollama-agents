@@ -1,7 +1,7 @@
 
-## 📝 Шаг 3: README для `03_calculator_agent`
-
 # 03 · Calculator Agent
+
+![Calculator Agent demo](../assets/03_calculator_demo.gif)
 
 Калькулятор с **памятью переменных**. Демонстрирует **agentic loop** — 
 многошаговый цикл, в котором модель может вызывать инструменты подряд.
