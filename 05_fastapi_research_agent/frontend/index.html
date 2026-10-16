@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Multi-Agent Text Editor</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 1100px; margin: 2rem auto; padding: 0 1rem;
+            background: #f5f7fa; color: #1a202c;
+        }
+        h1 { margin-bottom: 0.25rem; }
+        .subtitle { color: #718096; margin-bottom: 2rem; }
+        textarea {
+            width: 100%; height: 180px; padding: 1rem;
+            border: 1px solid #cbd5e0; border-radius: 8px;
+            font-family: inherit; font-size: 1rem; resize: vertical;
+        }
+        button {
+            background: #4299e1; color: white; border: none;
+            padding: 0.75rem 2rem; border-radius: 6px;
+            font-size: 1rem; cursor: pointer; margin-top: 1rem;
+            transition: 0.2s;
+        }
+        button:hover:not(:disabled) { background: #3182ce; }
+        button:disabled { background: #cbd5e0; cursor: not-allowed; }
+        .stage {
+            background: white; padding: 1.5rem; margin-top: 1rem;
+            border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 4px solid #4299e1;
+        }
+        .stage h3 { margin: 0 0 0.75rem; }
+        .stage h4 { margin: 1rem 0 0.5rem; font-size: 0.95rem; color: #4a5568; }
+        .stage.critic { border-color: #ed8936; }
+        .stage.editor { border-color: #4299e1; }
+        .stage.fact { border-color: #9f7aea; }
+        .stage.judge { border-color: #48bb78; }
+        .stage pre {
+            white-space: pre-wrap; font-family: inherit;
+            margin: 0; background: #f7fafc; padding: 0.75rem;
+            border-radius: 6px; font-size: 0.95rem;
+        }
+        .edit-row {
+            margin: 0.35rem 0; padding: 0.5rem;
+            background: #f0fff4; border-radius: 4px;
+            font-size: 0.9rem; color: #2f855a;
+        }
+        .skipped-block {
+            margin-top: 1rem; padding: 0.75rem;
+            background: #fffaf0; border-left: 4px solid #ed8936;
+            border-radius: 4px; font-size: 0.85rem;
+        }
+        .hidden { display: none; }
+        .spinner { display: inline-block; margin-left: 1rem; color: #718096; }
+    </style>
+</head>
+<body>
+    <h1>🤖 Multi-Agent Text Editor</h1>
+    <p class="subtitle">4 AI-агента улучшат ваш текст: Критик → Редактор → Факт-чекер → Судья</p>
+
+    <textarea id="input" placeholder="Вставьте ваш текст..."></textarea>
+    <div>
+        <button id="btn">Улучшить текст</button>
+        <span id="spinner" class="spinner hidden">⏳ Обработка (30-60 секунд)...</span>
+    </div>
+
+    <div id="results" class="hidden">
+        <div class="stage critic">
+            <h3>🔍 1. Замечания Критика</h3>
+            <pre id="critique"></pre>
+        </div>
+
+        <div class="stage editor">
+            <h3>✍️ 2. Правки Редактора</h3>
+            <div id="edits"></div>
+            <h4>Итоговый текст:</h4>
+            <pre id="improved"></pre>
+        </div>
+
+        <div class="stage fact">
+            <h3>✅ 3. Проверка фактов</h3>
+            <pre id="facts"></pre>
+        </div>
+
+        <div class="stage judge">
+            <h3>⚖️ 4. Финальный вердикт Судьи</h3>
+            <pre id="verdict"></pre>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('input');
+        const btn = document.getElementById('btn');
+        const spinner = document.getElementById('spinner');
+        const results = document.getElementById('results');
+
+        btn.addEventListener('click', async () => {
+            const text = input.value.trim();
+            if (!text) { alert('Введите текст'); return; }
+
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            results.classList.add('hidden');
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 300_000);
+
+            try {
+                console.log('Отправка запроса...');
+                const r = await fetch('/api/improve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text }),
+                    signal: controller.signal,
+                });
+                clearTimeout(timeoutId);
+
+                console.log('Статус:', r.status);
+                const data = await r.json();
+                console.log('Ответ:', data);
+
+                if (!r.ok) throw new Error(data.detail || 'Ошибка сервера');
+
+                // ── Заполняем карточки ──
+                setText('critique', data.critique);
+                setText('improved', data.improved);
+                setText('facts', data.facts_report);
+                setText('verdict', data.verdict);
+
+                // ── Правки ──
+                const editsDiv = document.getElementById('edits');
+                editsDiv.textContent = '';
+
+                if (data.edits && data.edits.length) {
+                    const title = document.createElement('div');
+                    title.style.cssText = 'font-weight: 600; margin-bottom: 0.5rem; color: #2f855a;';
+                    title.textContent = `✓ Применено правок: ${data.edits.length}`;
+                    editsDiv.appendChild(title);
+
+                    data.edits.forEach(e => {
+                        const row = document.createElement('div');
+                        row.className = 'edit-row';
+                        row.textContent = `+ «${e.before}» → «${e.after || '(удалено)'}»`;
+                        editsDiv.appendChild(row);
+                    });
+                } else {
+                    const none = document.createElement('div');
+                    none.style.cssText = 'color: #718096; font-style: italic;';
+                    none.textContent = 'Правок не предложено';
+                    editsDiv.appendChild(none);
+                }
+
+                // ── Отклонённые правки ──
+                if (data.skipped && data.skipped.length) {
+                    const block = document.createElement('div');
+                    block.className = 'skipped-block';
+
+                    const header = document.createElement('div');
+                    header.style.cssText = 'font-weight: 600; margin-bottom: 0.5rem;';
+                    header.textContent = `⚠️ Отклонено (защита фактов): ${data.skipped.length}`;
+                    block.appendChild(header);
+
+                    data.skipped.forEach(s => {
+                        const line = document.createElement('div');
+                        line.textContent = `• «${s.before}» — ${s.reason || 'не найдено'}`;
+                        block.appendChild(line);
+                    });
+                    editsDiv.appendChild(block);
+                }
+
+                results.classList.remove('hidden');
+                console.log('UI обновлён');
+            } catch (e) {
+                console.error('Ошибка:', e);
+                if (e.name === 'AbortError') {
+                    alert('Превышено время ожидания (5 минут).');
+                } else {
+                    alert(`Ошибка: ${e.message}`);
+                }
+            } finally {
+                clearTimeout(timeoutId);
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+            }
+        });
+
+        function setText(id, value) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = value || '(пусто)';
+            } else {
+                console.warn(`Элемент #${id} не найден в DOM`);
+            }
+        }
+    </script>
+</body>
+</html>

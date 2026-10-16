@@ -25,6 +25,7 @@
 | 02 | [Notes Agent](./02_notes_agent/) | Работа с файлами, санитайзеры, защита от галлюцинаций |
 | 03 | [Calculator Agent](./03_calculator_agent/) | **Agentic loop**: многошаговые задачи, память переменных |
 | 04 | [Research Agent](./04_research_agent/) | **Внешние API**, работа с ошибками, **верификация фактов** |
+| 05 | [Multi-Agent Editor](./05_fastapi_research_agent/) | **Sub-agents**, diff-подход, FastAPI + Frontend |
 
 **Research Agent в действии** — поиск в интернете и проверка фактов:
 
@@ -38,3 +39,8 @@
 ### 2. Скачай модель
 ```bash
 ollama pull qwen2.5:3b
+```
+
+## 📄 Лицензия
+
+MIT — используй как хочешь.
