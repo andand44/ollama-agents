@@ -1,0 +1,10 @@
+
+## 📝 Шаг 5: Проверка `.gitignore`
+.venv/
+__pycache__/
+*.pyc
+*.txt
+!requirements.txt
+*.log
+.vscode/
+.idea/
