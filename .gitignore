@@ -25,3 +25,6 @@ Thumbs.db
 *.txt
 !requirements.txt
 *.log
+
+# Cloudflare Wrangler cache
+.wrangler/
