@@ -27,6 +27,7 @@
 | 04 | [Research Agent](./04_research_agent/) | **Внешние API**, работа с ошибками, **верификация фактов** |
 | 05 | [Multi-Agent Editor](./05_fastapi_research_agent/) | **Sub-agents**, diff-подход, FastAPI + Frontend |
 | 06 | [RAG Document Assistant](./06_rag_assistant/) | **RAG**, эмбеддинги, семантический поиск, FastAPI |
+| 07 | [Telegram RAG Bot](./07_telegram_rag_bot/) | Интеграция с Telegram, Cloudflare Worker, aiogram |
 
 **Research Agent в действии** — поиск в интернете и проверка фактов:
 

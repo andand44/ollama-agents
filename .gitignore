@@ -1,13 +1,27 @@
-
-## 📝 Шаг 5: Проверка `.gitignore`
-.venv/
+# Python
 __pycache__/
 *.pyc
-*.txt
-!requirements.txt
-*.log
-.vscode/
-.idea/
+.venv/
+venv/
+
+# Секреты (никогда не коммитить!)
+.env
+.env.local
+*.key
+
 # RAG-артефакты
 index.pkl
 corpus/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Данные
+*.txt
+!requirements.txt
+*.log
