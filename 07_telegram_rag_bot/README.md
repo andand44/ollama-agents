@@ -1,19 +1,17 @@
 ## 07 · Telegram RAG Bot
 
-![RAG Assistant demo](../assets/06_rag_demo.gif)
-
 Telegram-бот с RAG-агентом. Отвечает на вопросы по базе знаний из 1292 чанков (19 статей Wikipedia), используя локальную LLM.
 
-https://../assets/07_telegram_rag_bot.gif
+![RAG Assistant demo](../assets/07_telegram_rag_bot.gif)
 
 ## 🎯 Что делает
-```bash
+
     /start — приветствие
 
     /stats — информация о базе знаний
 
     Любой текст — вопрос к RAG-системе
-```
+
 
 Бот переиспользует RAG-ядро из проекта 06.
 
@@ -26,7 +24,8 @@ https://../assets/07_telegram_rag_bot.gif
 Cloudflare Worker (worker.js) — прокси для API
 ↓
 Python-бот (aiogram) ←→ RAG-ядро (index.pkl) ←→ Ollama (qwen2.5:3b)
-🛠️ Стек
+
+## 🛠️ Стек
 
     aiogram 3.x — фреймворк для Telegram
 
@@ -44,6 +43,7 @@ Python-бот (aiogram) ←→ RAG-ядро (index.pkl) ←→ Ollama (qwen2.5:3
 2. Настрой .env
 
 Скопируй файл-шаблон и заполни его своими данными:
+
 ```bash
 cp .env.example .env
 ```
