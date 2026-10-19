@@ -2,7 +2,7 @@
 
 Telegram-бот с RAG-агентом. Отвечает на вопросы по базе знаний из 1292 чанков (19 статей Wikipedia), используя локальную LLM.
 
-![RAG Assistant demo](../assets/07_telegram_rag_bot.gif)
+![Telegram RAG Bot demo](../assets/07_telegram_rag_bot.gif)
 
 ## 🎯 Что делает
 

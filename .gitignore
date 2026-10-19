@@ -28,3 +28,6 @@ Thumbs.db
 
 # Cloudflare Wrangler cache
 .wrangler/
+
+# n8n data
+n8n_data/
