@@ -31,6 +31,7 @@
 | 08 | [n8n Portfolio Assistant](./08_n8n_portfolio_assistant/) | **n8n, Docker**, FastAPI, Telegram, AI-оркестрация |
 | 09 | [B2B Lead Generator](./09_b2b_lead_generator/) | **n8n, Telegram**, AI-ранжирование, Google Sheets |
 | 10 | [LLM Evaluator](./10_llm_evaluator/) | **FastAPI, PostgreSQL, Docker**, LLM-as-a-Judge, Pytest |
+| 11 | [Enterprise MCP Agent](./11_enterprise_mcp_agent/) | **LangGraph, MCP Protocol**, Docker, Redis, Qdrant, FastAPI |
 
 **Research Agent в действии** — поиск в интернете и проверка фактов:
 
