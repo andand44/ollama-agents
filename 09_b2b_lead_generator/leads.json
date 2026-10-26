@@ -1,0 +1,58 @@
+[
+  {
+    "company": "ООО ФармЛогистик",
+    "inn": "7701234567",
+    "description": "Крупный складской комплекс. 600 сотрудников.",
+    "employees": 600,
+    "has_catering": false,
+    "phones": [
+      "+7 999 111-22-33"
+    ],
+    "emails": [
+      "info@farmlog.ru"
+    ],
+    "priority": "AAA"
+  },
+  {
+    "company": "ИП Иванов",
+    "inn": "7707654321",
+    "description": "Мелкий ремонт обуви. 5 сотрудников.",
+    "employees": 5,
+    "has_catering": true,
+    "phones": [
+      "+7 999 123-45-67"
+    ],
+    "emails": [
+      "mail@example.com"
+    ],
+    "priority": "C"
+  },
+  {
+    "company": "ИП Петров",
+    "inn": "7707657777",
+    "description": "Мелкий ремонт обуви. 99 сотрудников.",
+    "employees": 99,
+    "has_catering": true,
+    "phones": [
+      "+7 999 123-7777"
+    ],
+    "emails": [
+      "mail@mail.com"
+    ],
+    "priority": "C"
+  },
+  {
+    "company": "ИП Анаконда",
+    "inn": "7707657788",
+    "description": "Мелкий ремонт обуви. 199 сотрудников.",
+    "employees": 199,
+    "has_catering": true,
+    "phones": [
+      "+7 999 123-7788"
+    ],
+    "emails": [
+      "mail@mail.com"
+    ],
+    "priority": "B"
+  }
+]
